@@ -4,6 +4,7 @@
 #   bootstrap.bin, hbmenu.nro, ro/main, hen/main,
 #   game/main                    nx-hbloader
 #   programs/ftpd-classic.nro    ftpd classic
+#   licenses/                    the licenses of everything above
 #
 # The Dockerfile runs this with RELEASE=1 and sets the sources and commits:
 #   make -f release/Makefile RELEASE_ZIP=FILE \
@@ -16,6 +17,10 @@ HBLOADER := $(DEPS)/nx-hbloader
 HBMENU := $(DEPS)/nx-hbmenu
 FTPD := $(DEPS)/ftpd
 STAGE := $(DEPS)/zip
+LICENSES := $(STAGE)/licenses
+# devkitPro's Switch portlibs that hbmenu and ftpd link.
+PORTLIB_LICENSES := $(DEVKITPRO)/portlibs/switch/licenses
+PORTLIBS := bzip2 freetype libconfig libjpeg-turbo libpng zlib
 
 # Checks out one commit of a repository into a folder.
 #   $(call checkout,DIR,URL,COMMIT)
@@ -24,6 +29,29 @@ rm -rf $(1)
 git init -q $(1)
 git -C $(1) fetch -q --depth=1 $(2) $(3)
 git -C $(1) checkout -q FETCH_HEAD
+endef
+
+# Copies the licenses of kaiHEN, the programs, and the libraries linked into
+# them. physfs and harfbuzz (linked into hbmenu) ship no license file with
+# their portlibs; release/licenses has them from upstream.
+define copy_licenses
+	mkdir -p $(LICENSES)
+	cp LICENSE $(LICENSES)/kaiHEN-GPL-2.0.txt
+	cp libkaihen/LICENSE $(LICENSES)/libkaihen-ISC.txt
+	cp $(HBLOADER)/LICENSE.md $(LICENSES)/nx-hbloader-ISC.md
+	cp $(HBMENU)/LICENSE.md $(LICENSES)/nx-hbmenu-ISC.md
+	cp $(HBMENU)/switch2/third_party/nanosvg/README.md $(LICENSES)/nanosvg-zlib.md
+	cp $(FTPD)/LICENSE $(LICENSES)/ftpd-GPL-3.0.txt
+	cp $(FTPD)/build/deps/GSL-4.1.0/LICENSE $(LICENSES)/gsl-MIT.txt
+	for file in $(FTPD)/source/posix/*.c; do \
+	    sed -n '1,/\*\//p' $$file; echo; \
+	done > $(LICENSES)/ftpd-posix-BSD.txt
+	cp $(DEVKITPRO)/libounce/licenses/* $(LICENSES)/
+	cp -r $(DEVKITPRO)/portlibs/switch2/share/licenses/ouncevk $(LICENSES)/
+	for lib in $(PORTLIBS); do \
+	    cp -r $(PORTLIB_LICENSES)/switch-$$lib $(LICENSES)/$$lib; \
+	done
+	cp release/licenses/* $(LICENSES)/
 endef
 
 all: $(RELEASE_ZIP)
@@ -54,6 +82,7 @@ $(RELEASE_ZIP): kaihen $(HBLOADER)/build/clean/main \
 	cp hen/build/main $(STAGE)/hen/main
 	cp $(HBLOADER)/build/clean/main $(STAGE)/game/main
 	cp $(FTPD)/build/switch2/ftpd-classic.nro $(STAGE)/programs/
+	$(copy_licenses)
 	mkdir -p $(dir $(abspath $@))
 	rm -f $@
 	cd $(STAGE) && zip -q -r -X $(abspath $@) .

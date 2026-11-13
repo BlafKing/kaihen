@@ -57,7 +57,7 @@ docker build --build-arg RELEASE=1 --output out .
 writes the release, `out/kaiHEN.zip`: these binaries with nx-hbloader
 (`game/main`), nx-hbmenu (`hbmenu.nro`) and ftpd classic
 (`programs/ftpd-classic.nro`), built at the commits that the Dockerfile
-names.
+names, and the licenses of everything in it (`licenses/`).
 
 The host tests, `sh hen/test.sh` and `sh ro/test.sh`,
 build with the host compiler and read libounce's headers from

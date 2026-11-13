@@ -21,6 +21,13 @@ HEN is started from various acquisition tools available for Switch 2. Run a
 native game by holding R. The second launch and onwards will launch into
 hbmenu.
 
+## Developing homebrew
+
+See the devkit repository,
+[ouncebrew/ounce-devkit](https://github.com/ouncebrew/ounce-devkit), to
+build homebrew. Existing Switch 1 homebrew that uses libnx and OpenGL or
+Vulkan can be compiled for Switch 2 with it.
+
 ## Building
 
 With the Switch 2 devkit installed in devkitPro (see the devkit repository,

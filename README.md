@@ -2,6 +2,13 @@
 
 kaiHEN改変 is a homebrew environment and minimal custom firmware for Switch 2.
 
+## Warning
+
+It's still a work in progress, and might have bugs.
+
+We allow full access to the system, including the system NAND. A malicious
+homebrew might write to your Switch 2 and brick it forever, so be warned.
+
 ## Components
 
 - `ro/`: an `ldr:ro` service. It maps NROs into its clients' processes,

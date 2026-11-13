@@ -3,24 +3,22 @@
 # Builds the kaiHEN release zip:
 #   bootstrap.bin, hbmenu.nro, ro/main, hen/main,
 #   game/main                    nx-hbloader
-#   programs/ftpd-classic.nro    ftpd classic
 #   programs/ounceshell.nro      OunceShell, the VitaShell port
 #   licenses/                    the licenses of everything above
 #
 # The Dockerfile runs this with RELEASE=1 and sets the sources and commits:
 #   make -f release/Makefile RELEASE_ZIP=FILE \
 #       HBLOADER_URL=... HBLOADER_COMMIT=... HBMENU_URL=... HBMENU_COMMIT=... \
-#       FTPD_URL=... FTPD_COMMIT=... OUNCESHELL_URL=... OUNCESHELL_COMMIT=...
+#       OUNCESHELL_URL=... OUNCESHELL_COMMIT=...
 DEVKITPRO ?= /opt/devkitpro
 RELEASE_ZIP ?= build/kaiHEN.zip
 DEPS := build/release
 HBLOADER := $(DEPS)/nx-hbloader
 HBMENU := $(DEPS)/nx-hbmenu
-FTPD := $(DEPS)/ftpd
 OUNCESHELL := $(DEPS)/ounceshell
 STAGE := $(DEPS)/zip
 LICENSES := $(STAGE)/licenses
-# devkitPro's Switch portlibs that hbmenu, ftpd and OunceShell link, that
+# devkitPro's Switch portlibs that hbmenu and OunceShell link, that
 # ship a license file.
 PORTLIB_LICENSES := $(DEVKITPRO)/portlibs/switch/licenses
 PORTLIBS := bzip2 freetype libarchive libconfig libjpeg-turbo libpng libzstd \
@@ -46,11 +44,6 @@ define copy_licenses
 	cp $(HBLOADER)/LICENSE.md $(LICENSES)/nx-hbloader-ISC.md
 	cp $(HBMENU)/LICENSE.md $(LICENSES)/nx-hbmenu-ISC.md
 	cp $(HBMENU)/switch2/third_party/nanosvg/README.md $(LICENSES)/nanosvg-zlib.md
-	cp $(FTPD)/LICENSE $(LICENSES)/ftpd-GPL-3.0.txt
-	cp $(FTPD)/build/deps/GSL-4.1.0/LICENSE $(LICENSES)/gsl-MIT.txt
-	for file in $(FTPD)/source/posix/*.c; do \
-	    sed -n '1,/\*\//p' $$file; echo; \
-	done > $(LICENSES)/ftpd-posix-BSD.txt
 	cp $(OUNCESHELL)/LICENSE $(LICENSES)/ounceshell-GPL-3.0.txt
 	cp $(OUNCESHELL)/switch2/third_party/ftpvita/LICENSE $(LICENSES)/ftpvita-MIT.txt
 	cp $(OUNCESHELL)/switch2/resources/NotoSans-OFL.txt $(LICENSES)/notosans-OFL.txt
@@ -76,17 +69,12 @@ $(HBMENU)/build/nro/nro/hbmenu.nro:
 	$(call checkout,$(HBMENU),$(HBMENU_URL),$(HBMENU_COMMIT))
 	$(MAKE) -C $(HBMENU) -f switch2/Makefile
 
-$(FTPD)/build/switch2/ftpd-classic.nro:
-	$(call checkout,$(FTPD),$(FTPD_URL),$(FTPD_COMMIT))
-	$(MAKE) -C $(FTPD) -f $(CURDIR)/release/ftpd.mk
-
 $(OUNCESHELL)/build/switch2/ounceshell.nro:
 	$(call checkout,$(OUNCESHELL),$(OUNCESHELL_URL),$(OUNCESHELL_COMMIT))
 	$(MAKE) -C $(OUNCESHELL) -f switch2/Makefile
 
 $(RELEASE_ZIP): kaihen $(HBLOADER)/build/clean/main \
-        $(HBMENU)/build/nro/nro/hbmenu.nro $(FTPD)/build/switch2/ftpd-classic.nro \
-        $(OUNCESHELL)/build/switch2/ounceshell.nro
+        $(HBMENU)/build/nro/nro/hbmenu.nro $(OUNCESHELL)/build/switch2/ounceshell.nro
 	rm -rf $(STAGE)
 	mkdir -p $(STAGE)/ro $(STAGE)/hen $(STAGE)/game $(STAGE)/programs
 	cp bootstrap/build/bootstrap.bin $(STAGE)/bootstrap.bin
@@ -94,7 +82,6 @@ $(RELEASE_ZIP): kaihen $(HBLOADER)/build/clean/main \
 	cp ro/build/main $(STAGE)/ro/main
 	cp hen/build/main $(STAGE)/hen/main
 	cp $(HBLOADER)/build/clean/main $(STAGE)/game/main
-	cp $(FTPD)/build/switch2/ftpd-classic.nro $(STAGE)/programs/
 	cp $(OUNCESHELL)/build/switch2/ounceshell.nro $(STAGE)/programs/
 	$(copy_licenses)
 	mkdir -p $(dir $(abspath $@))

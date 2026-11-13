@@ -3,8 +3,8 @@
 #   docker build --output out .
 #     ->  out/ro/main, out/hen/main, out/bootstrap.bin, out/libkaihen/
 #   docker build --build-arg RELEASE=1 --output out .
-#     ->  out/kaiHEN.zip, with nx-hbloader, nx-hbmenu, ftpd classic and
-#         OunceShell at the commits below (release/Makefile)
+#     ->  out/kaiHEN.zip, with nx-hbloader, nx-hbmenu and OunceShell at the
+#         commits below (release/Makefile)
 #   docker build --target build -t kaihen-build .   (the build environment)
 # DEVKIT_IMAGE is the devkit's image: build it from the devkit repository, tagged
 # ounce-devkit, or name another with --build-arg DEVKIT_IMAGE=...
@@ -15,8 +15,6 @@ ARG HBLOADER_URL=https://github.com/ouncebrew/ounce-hbloader.git
 ARG HBLOADER_COMMIT=95f0e5dfbbcd28d678d30c99eeb5344feb0f6e71
 ARG HBMENU_URL=https://github.com/ouncebrew/ounce-hbmenu.git
 ARG HBMENU_COMMIT=d7e10c028b53da17867615ee0a3c453b9cf9464a
-ARG FTPD_URL=https://github.com/mtheall/ftpd.git
-ARG FTPD_COMMIT=8cd5e109fedcdc087744338ce73aea5266650a0b
 ARG OUNCESHELL_URL=https://github.com/kurumuz/ounceshell.git
 ARG OUNCESHELL_COMMIT=09064f7d7449bb2661328599226aa7fe3b7ce5cc
 COPY . /src

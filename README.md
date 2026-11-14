@@ -35,6 +35,9 @@ See the devkit repository,
 build homebrew. Existing Switch 1 homebrew that uses libnx and OpenGL or
 Vulkan can be compiled for Switch 2 with it.
 
+Homebrew and plugins are allowed access to all system modules fs can access,
+so a large number of them.
+
 ## Building
 
 With the Switch 2 devkit installed in devkitPro (see the devkit repository,

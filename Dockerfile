@@ -16,7 +16,7 @@ ARG HBLOADER_COMMIT=95f0e5dfbbcd28d678d30c99eeb5344feb0f6e71
 ARG HBMENU_URL=https://github.com/ouncebrew/ounce-hbmenu.git
 ARG HBMENU_COMMIT=d7e10c028b53da17867615ee0a3c453b9cf9464a
 ARG OUNCESHELL_URL=https://github.com/kurumuz/ounceshell.git
-ARG OUNCESHELL_COMMIT=09064f7d7449bb2661328599226aa7fe3b7ce5cc
+ARG OUNCESHELL_COMMIT=b2655caf6f8e48084bde84f18c28f834358f8286
 COPY . /src
 WORKDIR /src
 RUN make -j"$(nproc)" \

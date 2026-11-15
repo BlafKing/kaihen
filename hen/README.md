@@ -22,7 +22,7 @@ plugin, creates an SM proxy session and a clone of the FS root.
 Homebrew programs get a HEN session through RO
 (`kaihenOpenHomebrewSession` in `libkaihen/include/kaihen.h`). Its
 commands are declared in `libkaihen/include/kaihen/protocol.h`, protocol
-version 6:
+version 7:
 
 | Command | Returns |
 |---|---|
@@ -33,6 +33,7 @@ version 6:
 | 19 `GetServiceManager` | a new session on HEN's SM proxy |
 | 20, 21 `GetPluginCount`, `GetPluginName` | the plugins that publish IPC |
 | 22 `OpenPlugin` | a new session with a plugin |
+| 23 `GetLoaderRoot` | a clone of HEN's fsp-ldr root session |
 
 The FS root is already initialized. libounce installs it as the `fsp-srv`
 override and clones it without sending `SetCurrentProcess`, which would

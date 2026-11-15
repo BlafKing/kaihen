@@ -383,6 +383,10 @@ void HenServer::serveHomebrewCommand(const ReceivedRequest& request, u32 index,
         reply.result = sm_proxy_.openSession(&reply.copy_handle);
         reply.close_copy_after_send = R_SUCCEEDED(reply.result);
         break;
+    case HenHomebrewCommand_GetLoaderRoot:
+        reply.result = game_.cloneLoaderRoot(&reply.copy_handle);
+        reply.close_copy_after_send = R_SUCCEEDED(reply.result);
+        break;
     case HenHomebrewCommand_GetPluginCount:
         removeExitedPlugins();
         reply.result = 0;

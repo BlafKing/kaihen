@@ -148,6 +148,12 @@ Result GameArm::adoptLoaderRoot(Handle root) {
     R_SUCCEED();
 }
 
+Result GameArm::cloneLoaderRoot(Handle* out) const {
+    R_UNLESS(out != nullptr, UnexpectedState);
+    R_UNLESS(loader_root_ != INVALID_HANDLE, UnexpectedState);
+    return cmifCloneCurrentObject(loader_root_, out);
+}
+
 Result GameArm::start(Handle filesystem_root, Handle bootstrap_process) {
     R_UNLESS(configured_, UnexpectedState);
     R_UNLESS(handles0_, UnexpectedState);

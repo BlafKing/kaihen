@@ -383,10 +383,18 @@ void HenServer::serveHomebrewCommand(const ReceivedRequest& request, u32 index,
         reply.result = sm_proxy_.openSession(&reply.copy_handle);
         reply.close_copy_after_send = R_SUCCEEDED(reply.result);
         break;
-    case HenHomebrewCommand_GetLoaderRoot:
-        reply.result = game_.cloneLoaderRoot(&reply.copy_handle);
+    case HenHomebrewCommand_OpenCodeFileSystem: {
+        HenCodeFileSystemRequest code;
+        if (request.data_size < sizeof(code)) {
+            break;
+        }
+        std::memcpy(&code, request.data, sizeof(code));
+        reply.result = game_.openCodeFileSystem(
+            code.program_id, code.storage_id, code.content_attributes,
+            &reply.copy_handle);
         reply.close_copy_after_send = R_SUCCEEDED(reply.result);
         break;
+    }
     case HenHomebrewCommand_GetPluginCount:
         removeExitedPlugins();
         reply.result = 0;

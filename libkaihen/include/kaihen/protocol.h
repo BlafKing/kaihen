@@ -86,9 +86,23 @@ typedef enum {
     HenHomebrewCommand_GetPluginName = 21,
     /// Takes HenPluginName and returns a new plugin session by COPY.
     HenHomebrewCommand_OpenPlugin = 22,
-    /// Returns a new clone of HEN's fsp-ldr root session by COPY.
-    HenHomebrewCommand_GetLoaderRoot = 23,
+    /// Takes HenCodeFileSystemRequest and returns the opened file system by COPY.
+    HenHomebrewCommand_OpenCodeFileSystem = 23,
 } HenHomebrewCommand;
+
+/// The arguments accepted by HenHomebrewCommand_OpenCodeFileSystem.
+typedef struct {
+    u8 content_attributes;
+    u8 storage_id;
+    u8 padding[6];
+    u64 program_id;
+} HenCodeFileSystemRequest;
+
+#ifdef __cplusplus
+static_assert(sizeof(HenCodeFileSystemRequest) == 16, "Code file system request layout");
+#else
+_Static_assert(sizeof(HenCodeFileSystemRequest) == 16, "Code file system request layout");
+#endif
 
 /// The reply of HenHomebrewCommand_GetStatus.
 typedef struct {

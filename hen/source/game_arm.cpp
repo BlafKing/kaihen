@@ -148,10 +148,30 @@ Result GameArm::adoptLoaderRoot(Handle root) {
     R_SUCCEED();
 }
 
-Result GameArm::cloneLoaderRoot(Handle* out) const {
+Result GameArm::openCodeFileSystem(u64 program_id, u8 storage_id, u8 attributes,
+                                   Handle* out) const {
     R_UNLESS(out != nullptr, UnexpectedState);
     R_UNLESS(loader_root_ != INVALID_HANDLE, UnexpectedState);
-    return cmifCloneCurrentObject(loader_root_, out);
+
+    Service loader = {};
+    serviceCreate(&loader, loader_root_);
+    loader.own_handle = false;
+    const struct {
+        u8 attributes;
+        u8 storage_id;
+        u8 padding[6];
+        u64 program_id;
+    } request = {attributes, storage_id, {}, program_id};
+    u8 code_info[0x1a4] = {};
+    FsFileSystem filesystem = {};
+    R_TRY(serviceDispatchIn(&loader, 0, request,
+        .buffer_attrs = {SfBufferAttr_HipcMapAlias | SfBufferAttr_Out},
+        .buffers = {{code_info, sizeof(code_info)}},
+        .out_num_objects = 1,
+        .out_objects = &filesystem.s,
+    ));
+    *out = filesystem.s.session;
+    R_SUCCEED();
 }
 
 Result GameArm::start(Handle filesystem_root, Handle bootstrap_process) {

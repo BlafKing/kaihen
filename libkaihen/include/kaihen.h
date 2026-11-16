@@ -147,12 +147,18 @@ NX_INLINE Result henGetServiceManager(Service* s, Handle* out) {
     );
 }
 
-/// Gets a new clone of HEN's fsp-ldr root session. The caller owns it.
-NX_INLINE Result henGetLoaderRoot(Service* s, Handle* out) {
-    return serviceDispatch(s, HenHomebrewCommand_GetLoaderRoot,
+/// Opens a program's code file system. The caller owns it.
+NX_INLINE Result henOpenCodeFileSystem(Service* s,
+                                       const HenCodeFileSystemRequest* request,
+                                       FsFileSystem* out) {
+    Handle session = INVALID_HANDLE;
+    Result rc = serviceDispatchIn(s, HenHomebrewCommand_OpenCodeFileSystem, *request,
         .out_handle_attrs = { SfOutHandleAttr_HipcCopy },
-        .out_handles = out,
+        .out_handles = &session,
     );
+    if (R_SUCCEEDED(rc))
+        serviceCreate(&out->s, session);
+    return rc;
 }
 
 /// Returns the number of plugins that published an IPC service.

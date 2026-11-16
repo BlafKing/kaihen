@@ -24,7 +24,8 @@ class GameArm {
     /// HEN has the pm:dmnt session, every process counts as existing.
     bool processExists(u64 process_id);
     Result adoptLoaderRoot(Handle root);
-    Result cloneLoaderRoot(Handle* out) const;
+    Result openCodeFileSystem(u64 program_id, u8 storage_id, u8 attributes,
+                              Handle* out) const;
     Result start(Handle filesystem_root, Handle bootstrap_process);
     void step();
     HenGameStatus status() const;

@@ -33,7 +33,7 @@ version 7:
 | 19 `GetServiceManager` | a new session on HEN's SM proxy |
 | 20, 21 `GetPluginCount`, `GetPluginName` | the plugins that publish IPC |
 | 22 `OpenPlugin` | a new session with a plugin |
-| 23 `GetLoaderRoot` | a clone of HEN's fsp-ldr root session |
+| 23 `OpenCodeFileSystem` | a program's code file system |
 
 The FS root is already initialized. libounce installs it as the `fsp-srv`
 override and clones it without sending `SetCurrentProcess`, which would
